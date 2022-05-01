@@ -1,0 +1,39 @@
+services:
+  
+  server:
+   build: ./app
+   ports:
+     - 8004:8000
+   command: uvicorn main:app --host 0.0.0.0 --reload
+   volumes:
+     - ./app:/src/app
+   environment:
+     - CELERY_BROKER_URL=redis://redis:6379/0
+     - CELERY_RESULT_BACKEND=redis://redis:6379/0
+   depends_on:
+    - redis
+  
+  celery_worker:
+   build: ./app
+   volumes:
+     - ./app:/src/app
+   environment:
+     - CELERY_BROKER_URL=redis://redis:6379/0
+     - CELERY_RESULT_BACKEND=redis://redis:6379/0
+   depends_on:
+     - server
+     - redis
+  
+  redis:
+    image: redis:7.0-alpine3.15
+
+  db:
+    image: postgres:14-alpine3.15
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=dataset
+
+    
