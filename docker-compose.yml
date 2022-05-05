@@ -10,10 +10,11 @@ services:
    environment:
      - CELERY_BROKER_URL=redis://redis:6379/0
      - CELERY_RESULT_BACKEND=redis://redis:6379/0
-   restart: on-failure
    depends_on:
-    - db
-    - redis
+    db:
+      condition: service_healthy
+    redis:
+      condition: service_started
   
   celery_worker:
    build: ./app
@@ -38,4 +39,8 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=dataset
 
-    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres && psql --username=postgres --list"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
