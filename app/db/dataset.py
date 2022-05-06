@@ -56,4 +56,8 @@ def clean(dataset_url: str) -> pd.DataFrame:
     # No Data can be considered as a N/A value
     df.replace("No Data", np.nan, inplace=True)
 
+    # set the id column
+    df["id"] = df.index + 1
+    df.set_index("id", inplace=True)
+
     return df
