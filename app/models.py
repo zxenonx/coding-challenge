@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, Identity
 from db.session import Base
+
 
 class Grade(Base):
     """Holds Grade's model attributes.
@@ -7,9 +8,10 @@ class Grade(Base):
     Args:
         Base: Base class model from sqlalchemy
     """
+
     __tablename__ = "grades"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column("id", Integer, Identity(start=1, cycle=True), primary_key=True)
     school_name = Column(String)
     category = Column(String)
     total_enrollment = Column(Integer)
@@ -26,4 +28,3 @@ class Grade(Base):
     ratio_female = Column(Float)
     total_male = Column(Integer)
     ratio_male = Column(Float)
-
