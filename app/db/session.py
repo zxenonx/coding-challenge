@@ -1,4 +1,6 @@
+from typing import Optional
 from sqlalchemy import create_engine
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -14,11 +16,17 @@ Base = declarative_base()
 table = "grades"
 
 
-def write_to_db(dataframe: pd.DataFrame) -> None:
-    """_summary_
+def write_to_db(dataframe: pd.DataFrame) -> Optional[int]:
+    """Inserts dataframe into database.
 
     Args:
-        dataframe (pd.DataFrame): _description_
+        dataframe (pd.DataFrame): The dataframe to be inserted.
+
+    Returns: 
+        None or the number of rows affected.
+
+    Raises:
+        SQLAlchemyError: An error occurred while accessing the database.
     """
     rows_affected = 0
     connection = engine.connect()
@@ -30,9 +38,9 @@ def write_to_db(dataframe: pd.DataFrame) -> None:
             index=True,
             index_label="id"
         )
-    except ValueError as error:
+    except SQLAlchemyError as error:
         raise(error)
     else:
-        print("data", rows_affected)
+        return rows_affected
     finally:
         connection.close()
