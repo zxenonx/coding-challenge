@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from worker import load_dataset
 from config import settings
 
-import models
+import api.models as models
 
 from db.session import engine
 
