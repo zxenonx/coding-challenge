@@ -1,5 +1,5 @@
 import pandas as pd
-import numpy as np
+
 
 def clean(dataset_url: str) -> pd.DataFrame:
 
@@ -52,12 +52,49 @@ def clean(dataset_url: str) -> pd.DataFrame:
     # remove all rows in the dataframe where total_enrollment is empty
     df.drop(df[df["total_enrollment"].isnull() == True].index, inplace=True)
 
-    # replace No Data by np.nan in the whole dataframe
-    # No Data can be considered as a N/A value
-    df.replace("No Data", np.nan, inplace=True)
-
     # set the id column
     df["id"] = df.index + 1
     df.set_index("id", inplace=True)
+
+    # delete rows where missing values are "s" and "No Data"
+    for column in df:
+        df.drop(df.loc[df[column] == "No Data"].index, inplace=True)
+        df.drop(df.loc[df[column] == "s"].index, inplace=True)
+
+    df = set_data_types(df)
+    
+    return df
+
+
+def set_data_types(df: pd.DataFrame) -> pd.DataFrame:
+    """Set appropriate data types to columns in the dataframe.
+
+    Args:
+        df (pd.DataFrame): The dataframe to be modified.
+
+    Returns:
+        pd.DataFrame: The dataframe updated with types.
+    """
+
+    cols_int = [
+        "grade_k",
+        "grade_1",
+        "grade_2",
+        "grade_3",
+        "grade_4",
+        "grade_5",
+        "grade_6",
+        "grade_7",
+        "grade_8",
+        "total_enrollment",
+        "total_female",
+        "total_male",
+    ]
+    cols_float = ["ratio_female", "ratio_male"]
+    cols_string = ["school_name", "category"]
+
+    df[cols_int] = df[cols_int].astype(int)
+    df[cols_float] = df[cols_float].astype(float)
+    df[cols_string] = df[cols_string].astype(str)
 
     return df
