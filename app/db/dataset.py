@@ -2,6 +2,14 @@ import pandas as pd
 
 
 def clean(dataset_url: str) -> pd.DataFrame:
+    """Cleans and transforms the dataset.
+
+    Args:
+        dataset_url (str): The link where to get the dataset.
+
+    Returns:
+        pd.DataFrame: The dataset presented in a Dataframe format.
+    """
 
     # initialize pandas dataframe with the csv file with the columns specified
     columns = [
@@ -52,7 +60,7 @@ def clean(dataset_url: str) -> pd.DataFrame:
     # remove all rows in the dataframe where total_enrollment is empty
     df.drop(df[df["total_enrollment"].isnull() == True].index, inplace=True)
 
-    # set the id column
+    # set the id column and start the id values by 1
     df["id"] = df.index + 1
     df.set_index("id", inplace=True)
 
