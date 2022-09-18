@@ -1,5 +1,5 @@
-from sqlalchemy import Column, Integer, String, Float, Identity
 from db.session import Base
+from sqlalchemy import Column, Float, Identity, Integer, String
 
 
 class Grade(Base):

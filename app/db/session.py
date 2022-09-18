@@ -1,11 +1,11 @@
 from typing import Optional
+
+import pandas as pd
+from config import settings
 from sqlalchemy import create_engine
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-
-from config import settings
-import pandas as pd
+from sqlalchemy.orm import sessionmaker
 
 engine = create_engine(settings.DATABASE_URL)
 

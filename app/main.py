@@ -1,10 +1,8 @@
+import api.models as models
+from config import settings
+from db.session import SessionLocal, engine
 from fastapi import FastAPI
 from worker import load_dataset
-from config import settings
-
-import api.models as models
-
-from db.session import engine
 
 app = FastAPI(debug=True, title="Grades|Dataset")
 
@@ -16,3 +14,17 @@ async def init_db():
 
     # load dataset into table "grades"
     load_dataset.delay(settings.DATASET_URL)
+
+
+# dependency
+def get_db():
+    """_summary_
+
+    Yields:
+        _type_: _description_
+    """
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
